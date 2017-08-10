@@ -1,4 +1,4 @@
-package com.mkyong.controller;
+package com.example.fileupload;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
