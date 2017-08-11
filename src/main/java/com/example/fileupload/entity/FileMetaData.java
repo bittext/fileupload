@@ -5,7 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.stereotype.Component;
+
 @Entity
+@Component
 public class FileMetaData {
 	
 	@Id
@@ -15,6 +18,8 @@ public class FileMetaData {
 	private String type;
 	//size in MB's
 	private Double size; 
+	
+	public FileMetaData() {};
 	
 	public FileMetaData(String name,String Type, Double size) {
 		this.name = name;
