@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.fileupload.data.FileMetaData;
+import com.example.fileupload.entity.FileMetaData;
 import com.example.fileupload.service.StoreService;
 
 @Service("fileStoreService")

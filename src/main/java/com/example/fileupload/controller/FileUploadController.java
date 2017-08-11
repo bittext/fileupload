@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.fileupload.operation.FileUploadOperation;
 import com.example.fileupload.service.StoreService;
-import com.examples.fileupload.operation.FileUploadOperation;
 
 @Controller
 public class FileUploadController {
 	
 	@Autowired
-	FileUploadOperation fileUpload;
+	FileUploadOperation fileUploadOperation;
 	
 	
 	Logger logger = Logger.getLogger("FileUploadController");
@@ -46,7 +46,7 @@ public class FileUploadController {
 		try {
 
             
-			fileUpload.fileUploadWithMetaData(file);
+			fileUploadOperation.fileUploadWithMetaData(file);
 
             redirectAttributes.addFlashAttribute("message",
                     "You successfully uploaded '" + file.getOriginalFilename() + "'");
