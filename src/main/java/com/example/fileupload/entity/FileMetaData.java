@@ -26,6 +26,14 @@ public class FileMetaData {
 		this.type = type;
 		this.size = size;
 	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	public Long getId() {
+		return id;
+	}
 
 	public String getName() {
 		return name;

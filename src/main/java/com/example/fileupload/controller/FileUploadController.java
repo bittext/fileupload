@@ -20,42 +20,43 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.fileupload.operation.FileUploadOperation;
+import com.example.fileupload.domain.FileUploadResponse;
+import com.example.fileupload.exception.FileUploadException;
+import com.example.fileupload.service.FileMetaDataService;
 import com.example.fileupload.service.StoreService;
 
+import io.swagger.annotations.Api;
+
 @Controller
+@Api(value="fileupload", description="Controller for fileupload operations")
 public class FileUploadController {
 	
 	@Autowired
-	FileUploadOperation fileUploadOperation;
+	FileMetaDataService fileMetaDataService;
 	
+	@Autowired
+	StoreService storeService;
+	
+	@Autowired
+	FileUploadResponse fileUploadResponse;
 	
 	Logger logger = Logger.getLogger("FileUploadController");
 	
 	@PostMapping
-	public String handleFileUpload(@RequestParam("file") MultipartFile file, 
-			RedirectAttributes redirectAttributes ) {
+	public ResponseEntity<?> fileUploadHandler(@RequestParam("file") MultipartFile file) {
 		
-		System.out.println("handleFileUPload...");
-		logger.debug("debug:FileUploadController..");
+		if (file ==null || file.isEmpty()) {
+			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
+		}
 		
-//		if (file.isEmpty()) {
-//			redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-//			return "redirect:uploadStatus";
-//		}
 		try {
+			fileMetaDataService.create(file);
+			storeService.writeFileContent(file);
+		} catch (FileUploadException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 
-            
-			fileUploadOperation.fileUploadWithMetaData(file);
-
-            redirectAttributes.addFlashAttribute("message",
-                    "You successfully uploaded '" + file.getOriginalFilename() + "'");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "redirect:/uploadStatus";
     }
 
 	 @GetMapping("/uploadStatus")

@@ -14,7 +14,7 @@ public class FileMetaDataDao {
 	
 	
 	public void create(FileMetaData data) {
-		entityManager.persist(data);
+		entityManager.merge(data);
 	}
 
 }
