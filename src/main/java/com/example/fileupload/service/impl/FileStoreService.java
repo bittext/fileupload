@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,35 +16,21 @@ import com.example.fileupload.service.StoreService;
 @Service("fileStoreService")
 public class FileStoreService implements StoreService {
 	
-	//Save the uploaded file to this folder
-    private static String UPLOADED_FILE = "c:///tmp///myfile.txt";
+	//location of uploaded files
+    private static String UPLOAD_LOC = ApplicationProperties.getFileUploadLocation();
     
+    private Logger logger = Logger.getLogger(FileStoreService.class);
     
-	
-	@Override
+    @Override
 	public void writeFileContent(MultipartFile file) throws FileUploadException {
-		System.out.println("fileStoreService code called....");
-		System.out.println("File Upload Location: " + ApplicationProperties.getFileUploadLocation());
-		System.out.println("Error list: " + new ApplicationProperties().getErrors().size());
-		List<ApplicationProperties.Errors> errors = new ApplicationProperties().getErrors();
-		if (!errors.isEmpty()) {
-			System.out.println("lst is not empty");
-			System.out.println(errors.get(0));
-			System.out.println(errors.get(1));
-			System.out.println(errors.get(2));
-		}
-		System.out.println("Name: " + ApplicationProperties.getName());
-		 try {
-			FileWriter fw = new FileWriter(UPLOADED_FILE, true);
-			BufferedWriter bw = new BufferedWriter(fw);
+    	List<ApplicationProperties.Errors> errors = new ApplicationProperties().getErrors();
+		try (FileWriter fw = new FileWriter(UPLOAD_LOC + file.getOriginalFilename(), true); BufferedWriter bw = new BufferedWriter(fw);) {
 			bw.write(new String(file.getBytes()));
-			if(true)
-				throw new FileUploadException("A123","IOException");
-			bw.close();
+			logger.debug(file.getOriginalFilename() + " file saved");
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new FileUploadException("A123","IOException");
+			logger.error("Error writing file: " + file.getOriginalFilename(), e);
+			int errorCodeIndex=errors.indexOf("F01");
+			throw new FileUploadException(errors.get(errorCodeIndex).getCode(),errors.get(errorCodeIndex).getDescription());
 		}
 	}
-
 }

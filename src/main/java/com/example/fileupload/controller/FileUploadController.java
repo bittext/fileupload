@@ -1,25 +1,18 @@
 package com.example.fileupload.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.fileupload.config.ApplicationProperties;
 import com.example.fileupload.dto.FileUploadResponse;
 import com.example.fileupload.exception.FileUploadException;
 import com.example.fileupload.service.FileMetaDataService;
@@ -40,12 +33,29 @@ public class FileUploadController {
 	@Autowired
 	FileUploadResponse fileUploadResponse;
 	
+	//max file size permissible to upload
+	private static int MAX_FILE_SIZE = 10 * 1024 * 1024; //10MB
+	
 	Logger logger = Logger.getLogger("FileUploadController");
 	
 	@PostMapping
 	public ResponseEntity<?> fileUploadHandler(@RequestParam("file") MultipartFile file) {
+		List<ApplicationProperties.Errors> errors = new ApplicationProperties().getErrors();
 		
-		if (file ==null || file.isEmpty()) {
+		//check if file is empty
+		if (file == null || file.isEmpty()) {
+			int errorCodeIndex=errors.indexOf("F04");
+			fileUploadResponse.setErrorCode(errors.get(errorCodeIndex).getCode());
+			fileUploadResponse.setErrorDesc(errors.get(errorCodeIndex).getDescription());
+			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
+		}
+		fileUploadResponse.setName(file.getOriginalFilename());
+		
+		//file size check
+		if (file.getSize() > MAX_FILE_SIZE) {
+			int errorCodeIndex=errors.indexOf("F05");
+			fileUploadResponse.setErrorCode(errors.get(errorCodeIndex).getCode());
+			fileUploadResponse.setErrorDesc(errors.get(errorCodeIndex).getDescription());
 			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 		}
 		
@@ -53,12 +63,14 @@ public class FileUploadController {
 			fileMetaDataService.create(file);
 			storeService.writeFileContent(file);
 		} catch (FileUploadException e) {
-			fileUploadResponse.setName(file.getOriginalFilename());
 			fileUploadResponse.setErrorCode(e.getCode());
 			fileUploadResponse.setErrorDesc(e.getDescription());
-			e.printStackTrace();
 			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
-			
+		} catch (Exception e) {
+			int errorCodeIndex=errors.indexOf("F03"); //unknown exception
+			fileUploadResponse.setErrorCode(errors.get(errorCodeIndex).getCode());
+			fileUploadResponse.setErrorDesc(errors.get(errorCodeIndex).getDescription());
+			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 		}
 		return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 

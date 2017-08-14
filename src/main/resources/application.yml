@@ -15,14 +15,23 @@ spring:
 ---
 
 application:
-  fileUploadLocation: c://fileupload
-  errors:
-    - code: 11
-      description: error1
-    - code: 12
-      description: error2
-    - code: 1
-      description: error3
+  fileUploadLocation: c://temp//
   name: fileupload
+  errors:
+    - code: F01
+      description: Error writing to a file
+      severity: Severe
+    - code: F02
+      description: Error saving to the database
+      severity: Severe 
+    - code: F03
+      description: Unkown Error encountered, please report to the vendor
+      severity: Severe
+    - code: F04
+      description: File is empty, please select a file
+      severity: Severe
+    - code: F05
+      description: File size exceeds permissible limits of 10 MB
+      severity: Severe
 
        

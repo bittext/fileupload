@@ -2,6 +2,7 @@ package com.example.fileupload.exception;
 
 public class FileUploadException extends Exception {
 	
+	private static final long serialVersionUID = -1L;
 	private String code;
 	private String description;
 	

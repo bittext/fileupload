@@ -34,8 +34,4 @@ public class FileUploadResponse {
 	public void setErrorDesc(String errorDesc) {
 		this.errorDesc = errorDesc;
 	}
-	
-	
-	
-	
 }
