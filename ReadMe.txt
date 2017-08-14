@@ -7,5 +7,5 @@ Rest API to upload a file with few meta data information stored to a H2 database
  > mvn spring-boot:run
 
 #For running the application 
-   url > http://localhost:8080/
+   url > http://localhost:8080/ 
 
