@@ -47,6 +47,7 @@ public class FileUploadController {
 			int errorCodeIndex=errors.indexOf("F04");
 			fileUploadResponse.setErrorCode(errors.get(errorCodeIndex).getCode());
 			fileUploadResponse.setErrorDesc(errors.get(errorCodeIndex).getDescription());
+			fileUploadResponse.setStatus("Error");
 			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 		}
 		fileUploadResponse.setName(file.getOriginalFilename());
@@ -56,6 +57,7 @@ public class FileUploadController {
 			int errorCodeIndex=errors.indexOf("F05");
 			fileUploadResponse.setErrorCode(errors.get(errorCodeIndex).getCode());
 			fileUploadResponse.setErrorDesc(errors.get(errorCodeIndex).getDescription());
+			fileUploadResponse.setStatus("Error");
 			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 		}
 		
@@ -65,13 +67,17 @@ public class FileUploadController {
 		} catch (FileUploadException e) {
 			fileUploadResponse.setErrorCode(e.getCode());
 			fileUploadResponse.setErrorDesc(e.getDescription());
+			fileUploadResponse.setStatus("Error");
 			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 		} catch (Exception e) {
 			int errorCodeIndex=errors.indexOf("F03"); //unknown exception
 			fileUploadResponse.setErrorCode(errors.get(errorCodeIndex).getCode());
 			fileUploadResponse.setErrorDesc(errors.get(errorCodeIndex).getDescription());
+			fileUploadResponse.setStatus("Error");
 			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 		}
+
+		fileUploadResponse.setStatus("Success");
 		return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 
     }
