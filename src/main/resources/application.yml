@@ -16,4 +16,13 @@ spring:
 
 application:
   fileUploadLocation: c://fileupload
-         
+  errors:
+    - code: 11
+      description: error1
+    - code: 12
+      description: error2
+    - code: 1
+      description: error3
+  name: fileupload
+
+       

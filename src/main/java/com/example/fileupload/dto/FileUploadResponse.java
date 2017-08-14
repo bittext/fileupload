@@ -1,4 +1,4 @@
-package com.example.fileupload.domain;
+package com.example.fileupload.dto;
 
 import org.springframework.stereotype.Component;
 
@@ -7,7 +7,7 @@ public class FileUploadResponse {
 	
 	private String name;
 	private String status;
-	private int errorCode;
+	private String errorCode;
 	private String errorDesc;
 	
 	public String getName() {
@@ -22,10 +22,10 @@ public class FileUploadResponse {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public int getErrorCode() {
+	public String getErrorCode() {
 		return errorCode;
 	}
-	public void setErrorCode(int errorCode) {
+	public void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
 	public String getErrorDesc() {

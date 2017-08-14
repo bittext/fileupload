@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.fileupload.domain.FileUploadResponse;
+import com.example.fileupload.dto.FileUploadResponse;
 import com.example.fileupload.exception.FileUploadException;
 import com.example.fileupload.service.FileMetaDataService;
 import com.example.fileupload.service.StoreService;
@@ -53,7 +53,12 @@ public class FileUploadController {
 			fileMetaDataService.create(file);
 			storeService.writeFileContent(file);
 		} catch (FileUploadException e) {
+			fileUploadResponse.setName(file.getOriginalFilename());
+			fileUploadResponse.setErrorCode(e.getCode());
+			fileUploadResponse.setErrorDesc(e.getDescription());
 			e.printStackTrace();
+			return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
+			
 		}
 		return new ResponseEntity<FileUploadResponse>(fileUploadResponse,HttpStatus.OK);
 
